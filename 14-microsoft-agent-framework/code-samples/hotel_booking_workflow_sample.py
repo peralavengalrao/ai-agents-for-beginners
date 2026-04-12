@@ -181,13 +181,18 @@ async def main() -> None:
     print("🏨 HOTEL BOOKING CONDITIONAL WORKFLOW")
     print("=" * 80)
 
-    # GitHub Models or Azure OpenAI
-    openai_api_key = os.getenv("OPENAI_API_KEY")
+    # GitHub Models
     github_token = os.getenv("GITHUB_TOKEN")
-    chat_client = OpenAIChatClient(base_url=os.environ.get(
-        "GITHUB_ENDPOINT"), api_key=os.environ.get("GITHUB_TOKEN"), model_id="gpt-4o")
-
-
+    if not github_token:
+        raise ValueError(
+            "GITHUB_TOKEN environment variable is not set. "
+            "Please set it to use GitHub Models."
+        )
+    chat_client = OpenAIChatClient(
+        base_url=os.environ.get("GITHUB_ENDPOINT", "https://models.inference.ai.azure.com"),
+        api_key=github_token,
+        model_id=os.environ.get("GITHUB_MODEL_ID", "gpt-4o"),
+    )
 
     print("\n" + "=" * 80)
     print("STEP 1: Creating AI Agents with Structured Outputs")
